@@ -6,10 +6,22 @@ on:
       - main
 
 jobs:
-  greet:
+  j_set_name:
+    name: Set name job
+    outputs:
+      name: ${{ steps.s_set_name.name }}
     runs-on: ubuntu-latest
     steps:
-      - name: Print greeting
+      - name: Set name step
+        id: s_set_name
         run: |
-          echo "This is my first GH Actions workflow 🔥"
+          echo "name=${{ github.actor }}" >> GITHUB_ENV
+  j_print_name:
+    name: Print name job
+    needs: [ j_set_name ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print name step
+        run: |
+          echo "Hi ${{ needs.j_set_name.name }}"
         
