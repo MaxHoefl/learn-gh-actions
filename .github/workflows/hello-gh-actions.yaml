@@ -15,7 +15,7 @@ jobs:
       - name: Set name step
         id: s_set_name
         run: |
-          echo "name=Max" >> "$GITHUB_OUTPUT"
+          echo "name=Max" >> $GITHUB_OUTPUT
   j_print_name:
     name: Print name job
     needs: [ j_set_name ]
@@ -24,4 +24,11 @@ jobs:
       - name: Print name step
         run: |
           echo "Hi ${{ needs.j_set_name.outputs.name }}"
+      - name: Generate list using Markdown
+        run: |
+          echo "This is the lead in sentence for the list" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY # this is a blank line
+          echo "- Lets add a bullet point" >> $GITHUB_STEP_SUMMARY
+          echo "- Lets add a second bullet point" >> $GITHUB_STEP_SUMMARY
+          echo "- How about a third one?" >> $GITHUB_STEP_SUMMARY
         
