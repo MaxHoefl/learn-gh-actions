@@ -15,7 +15,7 @@ jobs:
       - name: Set name step
         id: s_set_name
         run: |
-          echo "name=${{ github.actor }}" >> GITHUB_ENV
+          echo "name=Max" >> GITHUB_ENV
   j_print_name:
     name: Print name job
     needs: [ j_set_name ]
