@@ -23,5 +23,5 @@ jobs:
     steps:
       - name: Print name step
         run: |
-          echo "Hi ${{ needs.j_set_name.name }}"
+          echo "Hi ${{ needs.j_set_name.outputs.name }}"
         
