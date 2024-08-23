@@ -9,7 +9,7 @@ jobs:
   j_set_name:
     name: Set name job
     outputs:
-      name: ${{ steps.s_set_name.name }}
+      name: ${{ steps.s_set_name.outputs.name }}
     runs-on: ubuntu-latest
     steps:
       - name: Set name step
