@@ -16,6 +16,7 @@ jobs:
         id: s_set_name
         run: |
           echo "name=Max" >> $GITHUB_OUTPUT
+          echo "name=Mona" >> $GITHUB_OUTPUT
   j_print_name:
     name: Print name job
     needs: [ j_set_name ]
