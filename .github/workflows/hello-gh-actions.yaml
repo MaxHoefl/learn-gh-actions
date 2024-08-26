@@ -32,4 +32,19 @@ jobs:
           echo "- Lets add a bullet point" >> $GITHUB_STEP_SUMMARY
           echo "- Lets add a second bullet point" >> $GITHUB_STEP_SUMMARY
           echo "- How about a third one?" >> $GITHUB_STEP_SUMMARY
-        
+  j_dev_context:
+    name: Exploring dev configuration
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - name: Print development configuration variable
+        run: |
+          echo "FOO=${{ vars.FOO }}"
+  j_test_context:
+    name: Exploring test configuration
+    runs-on: ubuntu-latest
+    environment: test
+    steps:
+      - name: Print development configuration variable
+        run: |
+          echo "FOO=${{ vars.FOO }}"
