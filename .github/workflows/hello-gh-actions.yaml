@@ -17,6 +17,12 @@ jobs:
         run: |
           echo "name=Max" >> $GITHUB_OUTPUT
           echo "name=Mona" >> $GITHUB_OUTPUT
+      - name: Set secret step
+        id: s_set_secret
+        run: |
+          TOKEN1=${{ secrets.TOKEN1 }}
+          echo "::add-mask::$TOKEN1"
+          echo "::set-output name=some-token::$TOKEN1"
   j_print_name:
     name: Print name job
     needs: [ j_set_name ]
@@ -25,6 +31,9 @@ jobs:
       - name: Print name step
         run: |
           echo "Hi ${{ needs.j_set_name.outputs.name }}"
+      - name: Consume secret
+        run: |          
+          echo "Secret: ${{needs.j_set_name.outputs.some-token}}"
       - name: Generate list using Markdown
         run: |
           echo "This is the lead in sentence for the list" >> $GITHUB_STEP_SUMMARY
