@@ -9,7 +9,7 @@ on:
 jobs:
   initial-job:
     runs-on: ubuntu-latest
-    environment: production
+    environment: development
     steps:
       - name: Save secrets to file
         run: |
@@ -25,7 +25,6 @@ jobs:
   subsequent-job:
     needs: initial-job
     runs-on: ubuntu-latest
-    # No environment: production needed here
     steps:
       - name: Restore cached secrets
         uses: actions/cache@v3
