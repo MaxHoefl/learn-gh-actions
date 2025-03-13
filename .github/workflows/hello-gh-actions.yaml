@@ -23,8 +23,8 @@ jobs:
         id: s_set_secret
         run: |
           TOKEN1=${{ secrets.TOKEN1 }}
-          BINARY_ENCRYPTED_SECRET=$(echo -n "$TOKEN1" | openssl enc -aes-256-cbc -pbkdf2 -salt -k "${{ secrets.ENCRYPTION_PASSWORD }}")
-          echo "token1=$BINARY_ENCRYPTED_SECRET" >> $GITHUB_OUTPUT
+          echo "::add-mask::${{ secrets.TOKEN1 }}"
+          echo "token1=${{ secrets.TOKEN1 }}" >> $GITHUB_OUTPUT
   j_print_name:
     name: Print name job
     needs: [ j_set_name ]
@@ -34,10 +34,10 @@ jobs:
         run: |
           echo "Hi ${{ needs.j_set_name.outputs.name }}"
       - name: Consume secret
-        run: |          
-          BINARY_ENCRYPTED_SECRET=${{ needs.j_set_name.outputs.token1 }};
-          TOKEN1=$(echo -n "$BINARY_ENCRYPTED_SECRET" | openssl enc -aes-256-cbc -pbkdf2 -d -salt -k "${{ secrets.ENCRYPTION_PASSWORD }}");
-          echo "token1=$TOKEN1"
+        run: |
+          # The secret is available as:
+          echo "Using secret: ${{ needs.j_set_name.outputs.token1 }}"
+          # Use it in your commands
       - name: Generate list using Markdown
         run: |
           echo "This is the lead in sentence for the list" >> $GITHUB_STEP_SUMMARY
