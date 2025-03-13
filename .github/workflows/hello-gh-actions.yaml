@@ -5,43 +5,35 @@ on:
     branches:
       - main
 
+
 jobs:
-  j_set_name:
-    environment: development
-    name: Set name job
-    outputs:
-      name: ${{ steps.s_set_name.outputs.name }}
-      token1: ${{ steps.s_set_secret.outputs.token1 }}
+  initial-job:
     runs-on: ubuntu-latest
+    environment: production
     steps:
-      - name: Set name step
-        id: s_set_name
+      - name: Save secrets to file
         run: |
-          echo "name=Max" >> $GITHUB_OUTPUT
-          echo "name=Mona" >> $GITHUB_OUTPUT
-      - name: Set secret step
-        id: s_set_secret
-        run: |
-          TOKEN1=${{ secrets.TOKEN1 }}
-          echo "::add-mask::${{ secrets.TOKEN1 }}"
-          echo "token1=${{ secrets.TOKEN1 }}" >> $GITHUB_OUTPUT
-  j_print_name:
-    name: Print name job
-    needs: [ j_set_name ]
+          mkdir -p ./secrets
+          echo "${{ secrets.TOKEN1 }}" > ./secrets/token1
+
+      - name: Cache secrets
+        uses: actions/cache@v3
+        with:
+          path: ./secrets
+          key: ${{ runner.os }}-secrets-${{ github.run_id }}
+
+  subsequent-job:
+    needs: initial-job
     runs-on: ubuntu-latest
+    # No environment: production needed here
     steps:
-      - name: Print name step
+      - name: Restore cached secrets
+        uses: actions/cache@v3
+        with:
+          path: ./secrets
+          key: ${{ runner.os }}-secrets-${{ github.run_id }}
+
+      - name: Use secrets
         run: |
-          echo "Hi ${{ needs.j_set_name.outputs.name }}"
-      - name: Consume secret
-        run: |
-          # The secret is available as:
-          echo "Using secret: ${{ needs.j_set_name.outputs.token1 }}"
-          # Use it in your commands
-      - name: Generate list using Markdown
-        run: |
-          echo "This is the lead in sentence for the list" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY # this is a blank line
-          echo "- Lets add a bullet point" >> $GITHUB_STEP_SUMMARY
-          echo "- Lets add a second bullet point" >> $GITHUB_STEP_SUMMARY
-          echo "- How about a third one?" >> $GITHUB_STEP_SUMMARY  
+          TOKEN1=$(cat ./secrets/token1)
+          echo "Using secret (masked for security): $TOKEN1"
